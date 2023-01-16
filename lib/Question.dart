@@ -1,15 +1,11 @@
 class Question
 {
-  int questionNumber = 0;
+  String questionText = "";
+  bool questionAnswer = false;
 
-  List<String> questionText = [
-    'Cindy is stinky.',
-    'Cindy loves Green.',
-    'Is JAVA hard to learn.',
-  ];
-  List<bool> questionAnswer = [
-    true,
-    true,
-    true,
-  ];
+  Question({String q = "", bool a = false})
+  {
+    questionText = q;
+    questionAnswer = a;
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'Question.dart';
-import 'Score.dart';
+import 'package:quiz/QuizBrain.dart';
+
+QuizBrain quizBrain = QuizBrain();
 
 void main() => runApp(const HomePage());
 
@@ -11,13 +12,17 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+
         backgroundColor: Colors.amberAccent.shade100,
         appBar: AppBar(
           actions: [
-           TextButton(
-             child: const Icon(Icons.menu, color: Colors.white,),
-             onPressed: (){},
-           ),
+            TextButton(
+              child: const Icon(
+                Icons.menu,
+                color: Colors.white,
+              ),
+              onPressed: () {},
+            ),
           ],
           backgroundColor: Colors.teal.shade600,
           title: const Text('Quiz'),
@@ -36,102 +41,92 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  Question q1 = Question();
+  List<Icon> scoreKeeper = [];
+  void checkAnswer(bool userAnswer) {
+    bool correctAnswer = quizBrain.getQuestionAnswer();
+    setState(() {
+      if (correctAnswer == userAnswer) {
+        scoreKeeper.add(
+          const Icon(
+            Icons.check,
+            color: Colors.green,
+          ),
+        );
+      } else {
+        scoreKeeper.add(
+          const Icon(
+            Icons.close,
+            color: Colors.red,
+          ),
+        );
+      }
+
+      quizBrain.nextQuestion();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          flex: 5,
-          child: Center(
-            child: Text(
-              q1.questionText[q1.questionNumber],
-              style: const TextStyle(
-                fontSize: 30,
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Card(
-            margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-            color: Colors.teal.shade400,
-            child: TextButton(
-              child: const Text(
-                'True',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+    return SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            flex: 5,
+            child: Center(
+              child: Text(
+                textAlign: TextAlign.center,
+                quizBrain.getQuestionText(),
+                style: const TextStyle(
                   fontSize: 30,
-                  color: Colors.white,
                 ),
               ),
-              onPressed: () {
-                setState(() {
-                  if(true == q1.questionAnswer[q1.questionNumber])
-                    {
-                      print('corrected answer.');
-                    }
-                  else
-                    {
-                      print('wrong answer.');
-                    }
-                  if(q1.questionNumber < 2)
-                   {
-                    q1.questionNumber++;
-                   }
-                  else if (q1.questionNumber == 2)
-                   {
-                     q1.questionNumber = 0;
-                   }
-                });
-              },
             ),
           ),
-        ),
-        Expanded(
-          child: Card(
-            margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-            color: Colors.teal.shade400,
-            child: TextButton(
-              child: const Text(
-                'False',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                  color: Colors.white,
+          Expanded(
+            child: Card(
+              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              color: Colors.teal.shade400,
+              child: TextButton(
+                child: const Text(
+                  'True',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    color: Colors.white,
+                  ),
                 ),
+                onPressed: () {
+                  checkAnswer(true);
+                },
               ),
-              onPressed: () {
-                setState(() {
-                  if(false == q1.questionAnswer[q1.questionNumber])
-                  {
-                    print('corrected answer.');
-                  }
-                  else
-                  {
-                    print('wrong answer.');
-                  }
-                  if(q1.questionNumber < 2)
-                  {
-                    q1.questionNumber++;
-                  }
-                  else if (q1.questionNumber == 2)
-                  {
-                    q1.questionNumber = 0;
-                  }
-                });
-              },
             ),
           ),
-        ),
-        const Expanded(
-          flex: 1,
-          child: SizedBox(),
-        )
-      ],
+          Expanded(
+            child: Card(
+              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              color: Colors.red.shade400,
+              child: TextButton(
+                child: const Text(
+                  'False',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    color: Colors.white,
+                  ),
+                ),
+                onPressed: () {
+                  checkAnswer(false);
+                },
+              ),
+            ),
+          ),
+          Row(
+            children: scoreKeeper,
+          ),
+        ],
+      ),
     );
   }
 }
