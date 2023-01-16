@@ -1,11 +1,8 @@
 class Question
 {
-  String questionText = "";
-  bool questionAnswer = false;
+  String questionText;
+  bool questionAnswer;
 
-  Question({String q = "", bool a = false})
-  {
-    questionText = q;
-    questionAnswer = a;
-  }
+  Question({required this.questionText, required this.questionAnswer});
+
 }
